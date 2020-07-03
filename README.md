@@ -10,9 +10,10 @@
 
 # Preparation
 
-    - 1. create AWS Role for lamda function
 
-[![Role](images/aws-role-lambda.png)]
+1. create AWS Role for lambda function
+
+[![Role](images/aws-role-lambda.png)
 
 
 ## Deploy
