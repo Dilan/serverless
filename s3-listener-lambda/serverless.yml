@@ -1,0 +1,24 @@
+service: sdemo
+
+provider:
+    name: aws
+    role: ${opt:aws-role}
+    region: ${opt:aws-region,'eu-west-1'}
+    runtime: python3.7
+    stage: ${opt:stage,'dev'}
+    timeout: 360
+
+functions:
+    handle-api:
+        name: ${opt:stage}-image-resize
+        handler: handler.handle
+        layers:
+            - arn:aws:lambda:eu-west-1:789525204837:layer:pillow:1
+        events:
+          - s3:
+              bucket: images
+              event: s3:ObjectCreated:*
+              existing: true
+
+        environment:
+            S3_BUCKET_STORAGE: ${opt:s3-bucket-storage}

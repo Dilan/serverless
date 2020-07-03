@@ -1,0 +1,29 @@
+service: serverless-rest-api
+
+provider:
+    name: aws
+    profile: anton
+    role: ${opt:aws-role, 'arn:aws:iam::789525204837:role/service-role/dev-lambda'}
+    region: ${opt:aws-region,'eu-west-1'}
+    runtime: python3.7
+    stage: ${opt:stage,'dev'}
+    timeout: 360
+    environment:
+        S3_BUCKET_STORAGE: ${opt:s3-bucket-storage}
+
+functions:
+  list:
+    handler: item/list.list
+    events:
+      - http:
+          path: item/
+          method: get
+          cors: true
+
+  get:
+    handler: item/get.get
+    events:
+      - http:
+          path: item/{id}
+          method: get
+          cors: true
