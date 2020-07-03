@@ -13,7 +13,7 @@
 
 1. create AWS Role for lambda function
 
-[![Role]](images/aws-role-lambda.jpg)
+[![Role](images/aws-role-lambda.jpg)]
 
 
 ## Deploy
