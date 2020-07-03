@@ -6,3 +6,4 @@ venv/
 node_modules
 s3-listener-lambda/images/
 pillow.zip
+.DS_Store
