@@ -8,7 +8,7 @@
     $ export AWS_PROFILE=serverless
 
 
-# Preparation
+## Preparation
 
 
 1. create AWS Role for lambda function
@@ -16,24 +16,35 @@
 [![Role](images/aws-role-lambda.jpg)](http://console.aws.amazon.com)
 
 
+2. create AWS S3 bucket
+
+    $ aws s3 mb s3://sdemo-s3 --profile=serverless
+    $ aws s3 ls --profile=serverless
+
+
 ## Deploy
 
-Image resize
+Lambda 1: Image resize
 
     $ cd s3-listener-lambda
     $ sls deploy \
         --profile serverless \
         --stage dev \
-        --s3-bucket-images images
+        --arn-pillow-layer arn:aws:lambda:eu-west-1:789525204837:layer:pillow:1 \
+        --aws-role arn:aws:iam::789525204837:role/service-role/dev-lambda \
+        --aws-region eu-west-1 \
+        --s3-bucket sdemo-s3
 
 
-REST API
+Lambda 2: REST API
 
     $ cd rest-api-lambda
     $ sls deploy \
         --profile serverless \
         --stage dev \
-        --s3-bucket-storage sdemo-s3
+        --aws-role arn:aws:iam::789525204837:role/service-role/dev-lambda \
+        --s3-bucket sdemo-s3
+
 
 
 

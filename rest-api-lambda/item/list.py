@@ -1,11 +1,8 @@
 import json, os
 import boto3
 
-s3 = boto3.resource('s3')
-
-
-bucket_name = os.environ['S3_BUCKET_STORAGE']
-bucket = s3.Bucket(bucket_name)
+bucket_name = os.environ['S3_BUCKET']
+bucket = boto3.resource('s3').Bucket(bucket_name)
 
 def list(event, context):
 

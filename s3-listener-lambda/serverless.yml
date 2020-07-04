@@ -1,4 +1,4 @@
-service: sdemo
+service: sdemo-s3-listener
 
 provider:
     name: aws
@@ -13,12 +13,14 @@ functions:
         name: ${opt:stage}-image-resize
         handler: handler.handle
         layers:
-            - arn:aws:lambda:eu-west-1:789525204837:layer:pillow:1
+            - ${opt:arn-pillow-layer}
         events:
           - s3:
-              bucket: images
+              bucket: ${opt:s3-bucket}
               event: s3:ObjectCreated:*
               existing: true
+              rules:
+                  - prefix: images/
 
         environment:
-            S3_BUCKET_STORAGE: ${opt:s3-bucket-storage}
+            S3_BUCKET: ${opt:s3-bucket}

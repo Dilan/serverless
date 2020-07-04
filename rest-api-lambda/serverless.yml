@@ -1,15 +1,15 @@
-service: serverless-rest-api
+service: sdemo-rest-api
 
 provider:
     name: aws
     profile: anton
-    role: ${opt:aws-role, 'arn:aws:iam::789525204837:role/service-role/dev-lambda'}
+    role: ${opt:aws-role}
     region: ${opt:aws-region,'eu-west-1'}
     runtime: python3.7
     stage: ${opt:stage,'dev'}
     timeout: 360
     environment:
-        S3_BUCKET_STORAGE: ${opt:s3-bucket-storage}
+        S3_BUCKET: ${opt:s3-bucket}
 
 functions:
   list:
