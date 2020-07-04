@@ -1,26 +1,26 @@
 service: sdemo-s3-listener
 
 provider:
-    name: aws
-    role: ${opt:aws-role}
-    region: ${opt:aws-region,'eu-west-1'}
-    runtime: python3.7
-    stage: ${opt:stage,'dev'}
-    timeout: 360
+  name: aws
+  role: ${opt:aws-role}
+  region: ${opt:aws-region,'eu-west-1'}
+  runtime: python3.7
+  stage: ${opt:stage,'dev'}
+  timeout: 360
 
 functions:
-    handle-api:
-        name: ${opt:stage}-image-resize
-        handler: handler.handle
-        layers:
-            - ${opt:arn-pillow-layer}
-        events:
-          - s3:
-              bucket: ${opt:s3-bucket}
-              event: s3:ObjectCreated:*
-              existing: true
-              rules:
-                  - prefix: images/
+  handle-api:
+    name: ${opt:stage}-image-resize
+    handler: handler.handle
+    layers:
+      - ${opt:arn-pillow-layer}
+    events:
+      - s3:
+        bucket: ${opt:s3-bucket}
+        event: s3:ObjectCreated:*
+        existing: true
+        rules:
+          - prefix: images/
 
         environment:
-            S3_BUCKET: ${opt:s3-bucket}
+          S3_BUCKET: ${opt:s3-bucket}

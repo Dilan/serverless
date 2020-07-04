@@ -1,16 +1,19 @@
 import json, os, sys, boto3, io
 import PIL
-from PIL import Image
 
 # env --------------------------------------------------------------------------
-SSC_URL = os.environ['SSC_URL']
-
+SSC_URL = os.environ['S3_BUCKET']
 
 s3 = boto3.resource('s3')
 
 def handle(event, context):
 
-
+    print(event)
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
+    
 
     bucket_name = "images"
     key = "shark.jpg"
@@ -28,7 +31,7 @@ def handle(event, context):
 
     maxsize = (200, 200)
 
-    img = Image.open(img_path)
+    img = PIL.Image.open(img_path)
     img.thumbnail(maxsize, PIL.Image.ANTIALIAS)
     img.save("car_resized.jpg", "JPEG", optimize=True)
 
