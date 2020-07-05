@@ -1,53 +1,57 @@
-import json, os, sys, boto3, io
+import json, os, sys, boto3, io, logging
 import PIL
+from PIL import Image
 
 # env --------------------------------------------------------------------------
-SSC_URL = os.environ['S3_BUCKET']
+S3_BUCKET = os.environ['S3_BUCKET']
+
+# logging ----------------------------------------------------------------------
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 
 s3 = boto3.resource('s3')
 
 def handle(event, context):
 
-    print(event)
-    return {
-        'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
-    }
-    
+    print("======= EVENT ==============================")
+    logger.info(event)
 
-    bucket_name = "images"
-    key = "shark.jpg"
+    if 'Records' not in event or len(event['Records']) == 0 or 's3' not in event['Records'][0]:
+        logger.error('Unexpected [event]: %s', event);
+        return { 'statusCode': 400, 'body': json.dumps('Unexpected [event]') }
 
-    # obj = s3.Object(
-    #     bucket_name=bucket_name,
-    #     key=key,
-    # )
-    # obj_body = obj.get()['Body'].read()
+    bucket_name = event['Records'][0]['s3']['bucket']['name']
+    key         = event['Records'][0]['s3']['object']['key']
+    size        = event['Records'][0]['s3']['object']['size']
+    filename    = os.path.basename(key)
+    resized_key = "thumbnails/{filename}".format(filename=filename)
 
-    # f = open(, "rb")
-
-    img_path = "/Users/anton.plotnikov/Node/accenture/serverless/s3-listener-lambda/images/shark.jpg"
-
+    # download image from s3 ---------------------------------------------------
+    obj = s3.Object(bucket_name=bucket_name, key=key)
+    f = obj.get()['Body'].read()
 
     maxsize = (200, 200)
-
-    img = PIL.Image.open(img_path)
+    img = Image.open(io.BytesIO(f))
     img.thumbnail(maxsize, PIL.Image.ANTIALIAS)
-    img.save("car_resized.jpg", "JPEG", optimize=True)
 
+    buffer = io.BytesIO()
+    img.save(buffer, "JPEG", optimize=True)
+    buffer.seek(0)
 
-    # resized_key="{size}_{key}".format(size=size, key=key)
-    # obj = s3.Object(
-    #     bucket_name=bucket_name,
-    #     key=resized_key,
-    # )
-    # obj.put(Body=buffer, ContentType='image/jpeg')
+    # upload resized file to s3 ------------------------------------------------
+    boto3.client('s3').put_object(
+        Bucket=S3_BUCKET,
+        Key=resized_key,
+        Body=buffer,
+        ContentType='image/jpeg',
+    )
+
+    logger.info("Resized image stores to {key}".format(key=resized_key))
 
     return {
-        'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
+        'statusCode': 200, 'body': json.dumps('Image succesfully resized')
     }
-
 
 if __name__ == "__main__":
     handle({}, {})

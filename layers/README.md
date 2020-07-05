@@ -1,11 +1,11 @@
-### Create Layers:
+### AWS layers:
 
+	$ cd layers
 	$ virtualenv venv --python=python3
 	$ source venv/bin/activate
-	$ cd s3-listener-lambda/
-	$ mkdir python-resize-image
-	$ pip3 install pillow -t ./pillow
-	$ zip -r pillow.zip pillow
+	$ mkdir python
+	$ pip3 install pillow -t ./python
+	$ zip -r pillow.zip python
 
 	$ aws lambda publish-layer-version \
 		--region=eu-west-1 \
@@ -13,5 +13,5 @@
 	    --layer-name pillow \
 	    --description "Python Imaging Library (PIL)" \
 		--license-info "MIT" \
-		--zip-file fileb:///Users/anton.plotnikov/Node/accenture/serverless/s3-listener-lambda/pillow.zip \
+		--zip-file fileb:///Users/anton.plotnikov/Node/accenture/serverless/layers/pillow.zip \
 	    --compatible-runtimes python3.7 python3.8

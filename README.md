@@ -30,7 +30,7 @@ Lambda 1: Image resize
     $ sls deploy \
         --profile serverless \
         --stage dev \
-        --arn-pillow-layer arn:aws:lambda:eu-west-1:789525204837:layer:pillow:1 \
+        --arn-pillow-layer arn:aws:lambda:eu-west-1:789525204837:layer:pillow:7 \
         --aws-role arn:aws:iam::789525204837:role/service-role/dev-lambda \
         --aws-region eu-west-1 \
         --s3-bucket sdemo-s3
@@ -46,14 +46,11 @@ Lambda 2: REST API
         --s3-bucket sdemo-s3
 
 
-
-
 ### Development stage:
 
 1. REST API:
 
     $ cd rest-api-lambda
-
 
 
 Endpoints:
@@ -69,7 +66,6 @@ Endpoints:
 
 
 
-
 ## Invoke
 
     sls invoke -f list
@@ -77,12 +73,25 @@ Endpoints:
 
 ## Debug
 
-    sls logs -f list -t
+Add image to s3 bucket:
+
+    $ aws s3 cp images/headbag.png s3://sdemo-s3/images --profile serverless
+
+Stream logs:
+
+    $ sls logs -f handle-api -t --stage dev --profile serverless
 
 
+Invoke function:
+
+    $ sls invoke -f handle-api --stage dev --profile serverless -d '{"Records":[{"s3": { "bucket": {"name":"sdemo-s3"}, "object":{ "key": "images/shark.jpg"}  }}]}'
 
 # Useful AWS CLI commands:
 
 Display all s3 buckets:
 
     $ aws s3 ls --profile=serverless
+
+Show all images in bucket:
+
+    $ aws s3 ls s3://sdemo-s3/images/ --profile serverless
