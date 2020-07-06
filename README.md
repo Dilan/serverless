@@ -59,23 +59,17 @@ Endpoints:
     GET - https://*****.execute-api.eu-west-1.amazonaws.com/dev/item/{id}
 
 
-2. Image resize service:
-
-    $ aws s3 mb s3://images --profile=serverless
-    $ aws s3 mb s3://images --profile=serverless
-
-
 
 ## Invoke
 
-    sls invoke -f list
+    sls invoke -f list --profile serverless
 
 
 ## Debug
 
 Add image to s3 bucket:
 
-    $ aws s3 cp images/headbag.png s3://sdemo-s3/images --profile serverless
+    $ aws s3 cp images/r-and-morty-01.jpg s3://sdemo-s3/images/ --profile serverless
 
 Stream logs:
 
@@ -84,7 +78,8 @@ Stream logs:
 
 Invoke function:
 
-    $ sls invoke -f handle-api --stage dev --profile serverless -d '{"Records":[{"s3": { "bucket": {"name":"sdemo-s3"}, "object":{ "key": "images/shark.jpg"}  }}]}'
+    $ sls invoke -f handle-api --stage dev --profile serverless \
+        -d '{"Records":[{"s3": { "bucket": {"name":"sdemo-s3"}, "object":{ "key": "images/r-and-morty-01.jpg"}  }}]}'
 
 # Useful AWS CLI commands:
 
