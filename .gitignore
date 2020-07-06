@@ -7,6 +7,4 @@ node_modules
 s3-listener-lambda/images/
 pillow.zip
 .DS_Store
-images/r-and-morty-01.jpg
-images/r-and-morty-02.jpg
-images/r-and-morty-03.jpg
+images/r-and-morty-0*.jpg
