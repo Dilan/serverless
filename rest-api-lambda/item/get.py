@@ -1,4 +1,4 @@
-import json, os, boto3
+import json, os, boto3, base64
 
 bucket_name = os.environ['S3_BUCKET']
 
@@ -14,27 +14,27 @@ def get(event, context):
     counter = 0
     for obj in resp['Contents']:
 
-        if obj['Size']:
+        print(obj)
 
-            if counter == id:
-                obj = boto3.resource('s3').Object(bucket_name=bucket_name, key=obj['Key'])
-                f = obj.get()['Body'].read()
+        if obj['Size'] == 0:
+            continue
 
-                return {
-                    "statusCode": 200,
-                    "headers": {
-                      'Content-Type': 'image/png'
-                    },
-                    "body": f,
-                    "isBase64Encoded": True
-                }
+        counter += 1
+        if counter == id:
+            obj = boto3.resource('s3').Object(bucket_name=bucket_name, key=obj['Key'])
+            payload = obj.get()['Body'].read()
 
+            return {
+                "isBase64Encoded": True,
+                "statusCode": 200,
+                "headers": { "content-type": "image/jpg"},
+                'body': base64.b64encode(payload).decode("utf-8")
 
-            counter += 1
+            }
 
 
 
     return {
         "statusCode": 200,
-        "body": json.dumps(item)
+        "body": json.dumps("not found image...")
     }
