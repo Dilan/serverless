@@ -73,7 +73,17 @@ Add image to s3 bucket:
 
 Stream logs:
 
+
+for S3 listener and images resize:
+
+    $ cd s3-listener-lambda/
     $ sls logs -f handle-api -t --stage dev --profile serverless
+
+
+for REST API:
+
+    $ cd rest-api-lambda/
+    $ sls logs -f list -t --stage dev --profile serverless
 
 
 Invoke function:
