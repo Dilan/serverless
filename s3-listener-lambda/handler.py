@@ -9,7 +9,6 @@ S3_BUCKET = os.environ['S3_BUCKET']
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
 s3 = boto3.resource('s3')
 
 def handle(event, context):
@@ -47,11 +46,28 @@ def handle(event, context):
         ContentType='image/jpeg',
     )
 
-    logger.info("Resized image stores to {key}".format(key=resized_key))
+    print("Resized image stores to {key}".format(key=resized_key))
 
     return {
         'statusCode': 200, 'body': json.dumps('Image succesfully resized')
     }
 
 if __name__ == "__main__":
-    handle({}, {})
+
+    event = {
+        "Records": [
+            {
+              "s3": {
+                "bucket": {
+                  "name": "sdemo-s3"
+                },
+                "object": {
+                  "size": 330235,
+                  "key": "images/r-and-morty-02.jpg"
+                }
+              }
+            }
+        ]
+    }
+
+    handle(event, {})
